@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "/src/app.css";
 
 export default function App() {
@@ -6,16 +6,35 @@ export default function App() {
 
   const [posts, setPosts] = useState([]);
 
+  const [isPublished, setIsPublished] = useState(false);
+
+  const [isWhite, setIsWhite] = useState(false);
+
   const defaultFormData = {
     title: "",
     content: "",
     image: "",
     category: "",
     tags: [],
-    published: false,
+    published: isPublished,
   };
 
   const [formData, setFormData] = useState(defaultFormData);
+  const [editingIndex, setEditingIndex] = useState(null);
+
+  useEffect(() => {
+    isPublished ? alert("Post pubblicato") : "";
+    setFormData((data) => ({ ...data, published: isPublished }));
+  }, [isPublished]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIsWhite((isWhite) => !isWhite);
+    }, 4500);
+    return () => {
+      clearInterval(id);
+    };
+  }, []);
 
   const handleField = (name, value) => {
     setFormData((data) => ({ ...data, [name]: value }));
@@ -23,9 +42,13 @@ export default function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    setPosts((data) => [...data, formData]);
+    if (editingIndex !== null) {
+      updatePost(editingIndex, formData);
+    } else {
+      setPosts((data) => [...data, formData]);
+    }
     setFormData(defaultFormData);
+    setEditingIndex(null);
   };
 
   const removePost = (indexToRemove) => {
@@ -40,9 +63,14 @@ export default function App() {
     });
   };
 
+  const startEditing = (index) => {
+    setFormData(posts[index]);
+    setEditingIndex(index);
+  };
+
   return (
     <>
-      <section className="form-section">
+      <section className={`form-section ${isWhite ? "white" : ""}`}>
         <form onSubmit={handleSubmit}>
           <div className="form-element">
             <label htmlFor="title" className="title">
@@ -81,7 +109,6 @@ export default function App() {
             <label htmlFor="category">Categoria</label>
             <select
               name="category"
-              htmlFor="category"
               id="category"
               value={formData.category}
               onChange={(e) => handleField("category", e.target.value)}
@@ -112,7 +139,19 @@ export default function App() {
               </div>
             ))}
           </div>
-          <button type="submit">Submit</button>
+          <div className="form-element publish">
+            <input
+              type="checkbox"
+              id="publish"
+              name="publish"
+              checked={isPublished}
+              onChange={(e) => setIsPublished(e.target.checked)}
+            />
+            <label htmlFor="publish">Pubblica</label>
+          </div>
+          <button type="submit">
+            {editingIndex !== null ? "Update" : "Submit"}
+          </button>
         </form>
         <div className="title-container">
           {posts.length > 0 && (
@@ -134,6 +173,12 @@ export default function App() {
                     <br />
                     <span>Categoria:</span>
                     <p>{post.category}</p>
+                    <button
+                      onClick={() => startEditing(index)}
+                      className="edit-button"
+                    >
+                      Edit
+                    </button>
                     <button
                       onClick={() => removePost(index)}
                       className="delete-button"

@@ -5,6 +5,16 @@ body {
     padding: 20px;
 }
 
+.form-section{
+    padding: 3rem 0;
+    height: 100%;
+    background-color: black;
+}
+
+.form-section.white {
+  background-color: white;
+}
+
 form {
     background-color: #ffffff;
     border-radius: 8px;
@@ -46,6 +56,10 @@ button {
     font-size: 16px;
 }
 
+.delete-button {
+    margin: 0 1rem;
+}
+
 button:hover {
     background-color: #0056b3;
 }
@@ -67,7 +81,7 @@ button:hover {
 .list {
     padding: 0;
 
-    span{
+    span {
         font-weight: bold;
     }
 }
@@ -97,7 +111,7 @@ button:hover {
     border-radius: 4px;
 }
 
-.tags{
+.tags {
     display: flex;
     gap: 10px;
 }
