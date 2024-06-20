@@ -22,10 +22,16 @@ export default function App() {
   const [formData, setFormData] = useState(defaultFormData);
   const [editingIndex, setEditingIndex] = useState(null);
 
+  // useEffect(() => {
+  //   isPublished ? alert("Post pubblicato") : "";
+  //   setFormData((data) => ({ ...data, published: isPublished }));
+  // }, [isPublished]);
+
   useEffect(() => {
-    isPublished ? alert("Post pubblicato") : "";
-    setFormData((data) => ({ ...data, published: isPublished }));
-  }, [isPublished]);
+    return () => {
+      alert('stai modificando il valore published')
+    }
+  }, [defaultFormData.published])
 
   useEffect(() => {
     const id = setInterval(() => {
